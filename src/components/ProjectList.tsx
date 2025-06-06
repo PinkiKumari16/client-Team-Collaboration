@@ -3,6 +3,11 @@ import axios from "axios";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { setAlertContent, setReloadData } from "../redux/rootSlice";
 
+type Team = {
+  id: string;
+  name: string;
+};
+
 type Project = {
   _id: string;
   name: string;
@@ -18,15 +23,12 @@ type ProjectFormData = {
 
 const ProjectList: React.FC = () => {
   const dispatch = useAppDispatch();
-  
-  // Explicitly type projectData as Project[]
-  const { projectData, userRole, userTeam } = useAppSelector(
-    (state) => ({
-      projectData: state.root.projectData as Project[],
-      userRole: state.root.userRole,
-      userTeam: state.root.userTeam,
-    })
-  );
+
+  const { projectData, userRole, userTeam } = useAppSelector((state) => ({
+    projectData: state.root.projectData as Project[],
+    userRole: state.root.userRole,
+    userTeam: state.root.userTeam as Team | null,
+  }));
 
   const canEditOrAdd = userRole === "ADMIN" || userRole === "MANAGER";
   const canDelete = userRole === "ADMIN";
@@ -34,14 +36,15 @@ const ProjectList: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [editProjectId, setEditProjectId] = useState<string | null>(null);
+
   const [formData, setFormData] = useState<ProjectFormData>({
     name: "",
     description: "",
-    teamId: userTeam.id,
+    teamId: userTeam?.id || "", // ✅ Safe access
   });
 
   const openForm = () => {
-    setFormData({ name: "", description: "", teamId: userTeam.id });
+    setFormData({ name: "", description: "", teamId: userTeam?.id || "" });
     setShowForm(true);
     setIsEditMode(false);
     setEditProjectId(null);
@@ -51,7 +54,7 @@ const ProjectList: React.FC = () => {
     setFormData({
       name: project.name,
       description: project.description,
-      teamId: userTeam.id,
+      teamId: userTeam?.id || "",
     });
     setShowForm(true);
     setIsEditMode(true);
@@ -62,7 +65,7 @@ const ProjectList: React.FC = () => {
     setShowForm(false);
     setIsEditMode(false);
     setEditProjectId(null);
-    setFormData({ name: "", description: "", teamId: userTeam.id });
+    setFormData({ name: "", description: "", teamId: userTeam?.id || "" });
   };
 
   const handleSubmit = async () => {
@@ -76,6 +79,7 @@ const ProjectList: React.FC = () => {
       } else {
         response = await axios.post("/api/projects/insert", formData);
       }
+
       if (response.status === 200 || response.status === 201) {
         dispatch(setReloadData(true));
         dispatch(

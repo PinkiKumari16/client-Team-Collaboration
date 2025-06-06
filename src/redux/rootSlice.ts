@@ -1,17 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+interface Team {
+  id: string;
+  name: string;
+}
+
+interface RootStateType {
+  loading: boolean;
+  projectData: any[];
+  taskData: any[];
+  allUsersData: any[];
+  isReloadData: boolean;
+  userRole: string;
+  userTeam: Team | null;
+  alertContent: null | {
+    type: "success" | "error" | "info" | "warning";
+    message: string;
+  };
+}
+
+const initialState: RootStateType = {
+  loading: false,
+  projectData: [],
+  taskData: [],
+  allUsersData: [],
+  isReloadData: false,
+  userRole: "MEMBER",
+  userTeam: null, // ✅ FIXED: use null instead of {} to match Team | null
+  alertContent: null,
+};
 
 const rootSlice = createSlice({
   name: "root",
-  initialState: {
-    loading: false,
-    projectData: [],
-    taskData: [],
-    allUsersData: [],
-    isReloadData: false,
-    userRole: "MEMBER",
-    userTeam: {},
-    alertContent: null,
-  },
+  initialState,
   reducers: {
     showLoading: (state) => {
       state.loading = true;
@@ -19,25 +41,31 @@ const rootSlice = createSlice({
     hideLoading: (state) => {
       state.loading = false;
     },
-    setProjectData: (state, action) => {
+    setProjectData: (state, action: PayloadAction<any[]>) => {
       state.projectData = action.payload;
     },
-    setTaskData: (state, action) => {
+    setTaskData: (state, action: PayloadAction<any[]>) => {
       state.taskData = action.payload;
     },
-    setAllUsersData: (state, action) => {
+    setAllUsersData: (state, action: PayloadAction<any[]>) => {
       state.allUsersData = action.payload;
     },
-    setReloadData: (state, action) => {
+    setReloadData: (state, action: PayloadAction<boolean>) => {
       state.isReloadData = action.payload;
     },
-    setUserRole: (state, action) => {
+    setUserRole: (state, action: PayloadAction<string>) => {
       state.userRole = action.payload;
     },
-    setUserTeam: (state, action) => {
+    setUserTeam: (state, action: PayloadAction<Team | null>) => {
       state.userTeam = action.payload;
     },
-    setAlertContent: (state, action) => {
+    setAlertContent: (
+      state,
+      action: PayloadAction<{
+        type: "success" | "error" | "info" | "warning";
+        message: string;
+      } | null>
+    ) => {
       state.alertContent = action.payload;
     },
   },

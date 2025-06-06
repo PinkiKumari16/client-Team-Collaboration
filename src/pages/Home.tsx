@@ -15,12 +15,13 @@ import {
   showLoading,
 } from "../redux/rootSlice";
 
-// ✅ Define types
+// ✅ Type for Team
 interface Team {
   id: string;
   name: string;
 }
 
+// ✅ Sidebar UI component
 const SidebarItem = ({
   label,
   active,
@@ -53,7 +54,7 @@ export const Home = () => {
     projectData: any[];
     isReloadData: boolean;
     userRole: string;
-    userTeam: Team | null;
+    userTeam: Team | null; // ✅ FIXED typing
   } = useAppSelector((state) => state.root);
 
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -112,7 +113,7 @@ export const Home = () => {
       console.error("❌ Failed to fetch projects or users:", err);
     } finally {
       dispatch(hideLoading());
-      dispatch(setReloadData(false)); // ✅ fixed TS2554
+      dispatch(setReloadData(false));
     }
   };
 
@@ -138,7 +139,7 @@ export const Home = () => {
             onClick={() => setActiveTab("Dashboard")}
           />
 
-          {/* 🔽 Styled Project Dropdown like SidebarItem */}
+          {/* 🔽 Styled Project Dropdown */}
           <div
             className={`p-3 rounded-lg text-sm font-medium cursor-pointer ${
               activeTab === "Projects"
@@ -172,6 +173,7 @@ export const Home = () => {
           />
         </div>
 
+        {/* Logout */}
         <div className="relative bottom-4 mt-auto pt-4 border-t border-gray-300">
           <SidebarItem label="Logout" active={false} onClick={handleLogout} />
         </div>
