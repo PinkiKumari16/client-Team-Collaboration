@@ -4,12 +4,11 @@ import { getAuth, signOut } from "firebase/auth";
 
 import Dashboard from "../sections/Dashbord";
 import ProjectManagement from "../sections/ProjectSection";
-// import TaskManagement from "../sections/TaskSection";
 import CommunicationTools from "../sections/CommunicationTool";
-import Loader from "../components/Loader";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   hideLoading,
+  setAlertContent,
   setAllUsersData,
   setProjectData,
   setReloadData,
@@ -48,7 +47,6 @@ const SidebarItem = ({
 export const Home = () => {
   const dispatch = useAppDispatch();
   const {
-    loading,
     projectData,
     isReloadData,
     allUsersData,
@@ -83,7 +81,12 @@ export const Home = () => {
       window.location.href = "/login";
     } catch (error) {
       console.error("❌ Logout error:", error);
-      alert("Failed to logout. Please try again.");
+      dispatch(
+        setAlertContent({
+          type: "error",
+          message: "Failed to logout. Please try again.",
+        })
+      );
     }
   };
 
@@ -117,9 +120,7 @@ export const Home = () => {
     }
   }, [isReloadData]);
 
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-[1/3] lg:w-64 bg-white shadow-lg shadow-[#8c86a2] p-4 flex flex-col justify-between">
@@ -169,7 +170,7 @@ export const Home = () => {
           />
         </div>
 
-        <div className="fixed bottom-4 mt-auto pt-4 border-t border-gray-300 w-[30%] md:w-[16%] lg:w-[22%]">
+        <div className="relative bottom-4 mt-auto pt-4 border-t border-gray-300">
           <SidebarItem label="Logout" active={false} onClick={handleLogout} />
         </div>
       </aside>

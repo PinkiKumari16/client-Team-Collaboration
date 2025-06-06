@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import axios from "axios";
+import { hideLoading, showLoading } from "../redux/rootSlice";
 
-const socket: Socket = io("http://localhost:5000"); // Your backend WebSocket server
+const socket: Socket = io("https://server-team-collaboration.onrender.com");
 
 interface Message {
   sender: string;
@@ -13,6 +14,7 @@ interface Message {
 }
 
 const ChatTest: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const { userTeam } = useAppSelector((state) => state.root);
@@ -26,7 +28,7 @@ const ChatTest: React.FC = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       if (!teamId) return;
-
+      dispatch(showLoading());
       try {
         const res = await axios.get("/api/messages/get", {
           params: { teamId },
@@ -41,6 +43,8 @@ const ChatTest: React.FC = () => {
         setMessages(formattedMessages);
       } catch (error) {
         console.error("Failed to fetch messages:", error);
+      }finally{
+        dispatch(hideLoading());
       }
     };
 

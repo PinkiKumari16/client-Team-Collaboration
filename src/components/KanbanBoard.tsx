@@ -7,8 +7,7 @@ import {
   type DropResult,
 } from "react-beautiful-dnd";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import Loader from "./Loader";
-import { setAlertContent } from "../redux/rootSlice";
+import { hideLoading, setAlertContent, showLoading } from "../redux/rootSlice";
 
 interface Task {
   _id: string;
@@ -26,7 +25,7 @@ interface KanbanBoardProps {
 }
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
-  const { allUsersData, loading, userRole } = useAppSelector(
+  const { allUsersData, userRole } = useAppSelector(
     (state) => state.root
   );
   const dispatch = useAppDispatch();
@@ -47,12 +46,15 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   });
 
   const fetchTasks = async () => {
+    dispatch(showLoading());
     try {
       const res = await axios.get(`/api/task/getTasks?projectId=${projectId}`);
-      setTasks(res.data.tasks || []);
+      await setTasks(res.data.tasks || []);
     } catch (error) {
       dispatch(setAlertContent({ type: "error", message: error.message }));
       //   console.error("Error fetching tasks:", error);
+    } finally {
+      dispatch(hideLoading());
     }
   };
 
@@ -125,13 +127,12 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
         : await axios.post("/api/task/insert", payload);
 
       if (response.status === 200 || response.status === 201) {
+        resetForm();
         await fetchTasks();
         dispatch(
           setAlertContent({ type: "success", message: response.data.message })
         );
       }
-
-      resetForm();
     } catch (err) {
       console.error("Failed to save task:", err);
       dispatch(
@@ -186,98 +187,92 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
 
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
-        <DragDropContext onDragEnd={onDragEnd}>
-          <div className="flex justify-end">
-            <button
-              className="p-1 border rounded-md text-white bg-[#0a0233] px-3 cursor-pointer"
-              onClick={openAddForm}
-            >
-              Add New Task
-            </button>
-          </div>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="flex justify-end">
+          <button
+            className="p-1 border rounded-md text-white bg-[#0a0233] px-3 cursor-pointer"
+            onClick={openAddForm}
+          >
+            Add New Task
+          </button>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
-            {Object.entries(columns).map(([columnId, column]) => (
-              <Droppable droppableId={columnId} key={columnId}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={` bg-white overflow-y-auto max-h-[70vh] dark:bg-gray-800 rounded p-4 shadow-md min-h-[400px] border-t-4 ${
-                      column.color
-                    } ${snapshot.isDraggingOver ? "bg-blue-50" : ""}`}
-                  >
-                    <h3 className="text-xl font-semibold mb-3 text-gray-700 dark:text-white">
-                      {column.title}
-                    </h3>
-                    {column.tasks.map((task, index) => (
-                      <Draggable
-                        key={task._id}
-                        draggableId={task._id}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`p-3 mb-3 flex bg-[#f2f3fb] dark:bg-gray-700 rounded border border-gray-300 shadow ${
-                              snapshot.isDragging ? "bg-blue-200" : ""
-                            }`}
-                            onDoubleClick={() => openEditForm(task)}
-                          >
-                            <div className="mb-2 w-[90%]">
-                              <h4 className="font-semibold text-lg">
-                                {task.title}
-                              </h4>
-                              {task.description && (
-                                <p className="text-sm text-gray-600 dark:text-gray-300">
-                                  {task.description}
-                                </p>
-                              )}
-                            </div>
-                            <div className="flex flex-col justify-between">
-                              <span
-                                className="relative -top-3 left-7 text-red-500 font-bold cursor-pointer"
-                                onClick={() => handleDelete(task._id)}
-                              >
-                                X
-                              </span>
-                              <div className="relative group">
-                                {task.assignedTo?._id ? (
-                                  <div className="relative -bottom-2 -right-2 w-8 h-8 rounded-full bg-[#3a16f1] text-white flex items-center justify-center text-sm font-medium">
-                                    {task.assignedTo.name
-                                      .charAt(0)
-                                      .toUpperCase()}
-                                  </div>
-                                ) : (
-                                  <div className="relative -bottom-2 -right-2 w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium">
-                                    U
-                                  </div>
-                                )}
-
-                                <div className="absolute top-0 right-2 transform -translate-x-1/2 px-3 py-1 rounded-lg bg-gray-800 text-white text-xs shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 whitespace-nowrap">
-                                  {task.assignedTo?._id
-                                    ? task.assignedTo.name
-                                    : "Unassigned"}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
+          {Object.entries(columns).map(([columnId, column]) => (
+            <Droppable droppableId={columnId} key={columnId}>
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={` bg-white overflow-y-auto max-h-[70vh] dark:bg-gray-800 rounded p-4 shadow-md min-h-[400px] border-t-4 ${
+                    column.color
+                  } ${snapshot.isDraggingOver ? "bg-blue-50" : ""}`}
+                >
+                  <h3 className="text-xl font-semibold mb-3 text-gray-700 dark:text-white">
+                    {column.title}
+                  </h3>
+                  {column.tasks.map((task, index) => (
+                    <Draggable
+                      key={task._id}
+                      draggableId={task._id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={`p-3 mb-3 flex bg-[#f2f3fb] dark:bg-gray-700 rounded border border-gray-300 shadow ${
+                            snapshot.isDragging ? "bg-blue-200" : ""
+                          }`}
+                          onDoubleClick={() => openEditForm(task)}
+                        >
+                          <div className="mb-2 w-[90%]">
+                            <h4 className="font-semibold text-lg">
+                              {task.title}
+                            </h4>
+                            {task.description && (
+                              <p className="text-sm text-gray-600 dark:text-gray-300">
+                                {task.description}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex flex-col justify-between">
+                            <span
+                              className="relative -top-3 left-7 text-red-500 font-bold cursor-pointer"
+                              onClick={() => handleDelete(task._id)}
+                            >
+                              X
+                            </span>
+                            <div className="relative group">
+                              {task.assignedTo?._id ? (
+                                <div className="relative -bottom-2 -right-2 w-8 h-8 rounded-full bg-[#3a16f1] text-white flex items-center justify-center text-sm font-medium">
+                                  {task.assignedTo.name.charAt(0).toUpperCase()}
                                 </div>
+                              ) : (
+                                <div className="relative -bottom-2 -right-2 w-8 h-8 rounded-full bg-gray-400 text-white flex items-center justify-center text-sm font-medium">
+                                  U
+                                </div>
+                              )}
+
+                              <div className="absolute top-0 right-2 transform -translate-x-1/2 px-3 py-1 rounded-lg bg-gray-800 text-white text-xs shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 whitespace-nowrap">
+                                {task.assignedTo?._id
+                                  ? task.assignedTo.name
+                                  : "Unassigned"}
                               </div>
                             </div>
                           </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            ))}
-          </div>
-        </DragDropContext>
-      )}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
+        </div>
+      </DragDropContext>
 
       {/* Task Form Modal */}
       {showForm && (
