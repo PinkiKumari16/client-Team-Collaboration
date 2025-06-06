@@ -1,54 +1,124 @@
-# React + TypeScript + Vite
+# 🧑‍🤝‍🧑 Team Collaboration Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack, real-time team collaboration platform where teams can manage projects, assign and track tasks using a Kanban board, and communicate via team chat. The platform supports **role-based access control**, **real-time messaging**, and **drag-and-drop task management**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🔧 Tech Stack
 
-## Expanding the ESLint configuration
+### Frontend
+- **React** with **TypeScript**
+- **Tailwind CSS** for utility-first styling
+- **Firebase Authentication** for user login/registration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Backend
+- **Node.js** with **Express.js**
+- **MongoDB** with **Mongoose**
+- **Socket.IO** for real-time chat
+- **Joi** for schema validation
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Deployment
+- **Frontend**: [Vercel](https://vercel.com/)
+- **Backend**: [Render](https://render.com/)
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+
+---
+
+## 🚀 Live Demo
+- **GitHub**: [Server Code](https://github.com/PinkiKumari16/server-Team-Collaboration), [Client Code](https://github.com/PinkiKumari16/client-Team-Collaboration)
+- **Frontend**: [Live Frontend URL](https://client-team-collaboration-evf9.vercel.app/)
+- **Backend**: [Live API URL](https://server-team-collaboration.onrender.com/)
+- **Demo Video**: [Watch Demo](https://your-demo-video-link.com)
+
+---
+
+## 🔑 Features
+
+### 👥 Authentication & Authorization
+- Secure login and registration via Firebase Auth
+- Role-based UI and API access for **Admin**, **Manager**, and **Member**
+
+### 📁 Project Management
+- Admins/Managers can **create**, **edit**, and **delete** projects
+- Projects are team-specific
+
+### ✅ Task Management (Kanban)
+- Tasks grouped by status: `TODO`, `In Progress`, `Done`
+- Assign tasks to team members (Managers only)
+
+### 💬 Real-Time Chat
+- Team-wide messaging with Socket.IO
+- Real-time updates with timestamps and sender details
+
+### 📊 Team Overview
+- View list of team members with roles
+- Activity log showing task and chat actions
+
+---
+
+## 🛠️ Getting Started
+
+### 1. Clone the Repository
+
+```bash[
+git clone https://github.com/PinkiKumari16/server-Team-Collaboration.git
+git clone https://github.com/PinkiKumari16/client-Team-Collaboration.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Setup Backend
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
 ```
+npm install
+```
+
+#### 1. 🔐 Environment Variables
+Create a .env file inside the server directory with the following content:
+
+```bash
+PORT=5000
+MONGO_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_jwt_secret_key
+```
+
+#### 2. ▶️ Run the Backend Server
+```bash
+npm run dev
+```
+Server will run on: http://localhost:5000
+
+### 3. Setup Frontend
+
+```
+npm install
+```
+
+#### 1. 🔐 Firebase Config
+
+Create a .env file in the client directory with the following variables:
+
+```
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_BACKEND_API_URL=http://localhost:5000/api
+```
+
+#### 2. Run the Frontend App
+
+```
+npm run dev
+```
+Frontend will be available at: http://localhost:5173
+
+## ✅ Additional Features
+- Toast notifications
+- User activity logging (task updates, messages sent)
+
+## 📧 Contact
+**Pinki**
+- pinkikmr2672002@gmail.com
+- [LinkedI](https://www.linkedin.com/in/pinki-kumari-42b409257/)
+
+## License
+This project was created for evaluation as part of an interview assignment.
