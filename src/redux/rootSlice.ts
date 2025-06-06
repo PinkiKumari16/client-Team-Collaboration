@@ -13,10 +13,10 @@ const rootSlice = createSlice({
     alertContent: null,
   },
   reducers: {
-    showLoading: (state, action) => {
+    showLoading: (state) => {
       state.loading = true;
     },
-    hideLoading: (state, action) => {
+    hideLoading: (state) => {
       state.loading = false;
     },
     setProjectData: (state, action) => {
@@ -26,7 +26,7 @@ const rootSlice = createSlice({
       state.taskData = action.payload;
     },
     setAllUsersData: (state, action) => {
-    state.allUsersData = action.payload;
+      state.allUsersData = action.payload;
     },
     setReloadData: (state, action) => {
       state.isReloadData = action.payload;
@@ -34,7 +34,7 @@ const rootSlice = createSlice({
     setUserRole: (state, action) => {
       state.userRole = action.payload;
     },
-    setUserTeam: (state, action) =>{
+    setUserTeam: (state, action) => {
       state.userTeam = action.payload;
     },
     setAlertContent: (state, action) => {
@@ -42,6 +42,7 @@ const rootSlice = createSlice({
     },
   },
 });
+
 export default rootSlice.reducer;
 export const {
   showLoading,
@@ -52,5 +53,5 @@ export const {
   setUserRole,
   setUserTeam,
   setAllUsersData,
-  setAlertContent
+  setAlertContent,
 } = rootSlice.actions;

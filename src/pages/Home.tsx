@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { getAuth, signOut } from "firebase/auth";
 
@@ -14,14 +14,6 @@ import {
   setReloadData,
   showLoading,
 } from "../redux/rootSlice";
-
-type User = {
-  id: string;
-  name: string;
-  role: string;
-  teamId: string | null;
-  email: string;
-};
 
 const SidebarItem = ({
   label,
@@ -49,7 +41,6 @@ export const Home = () => {
   const {
     projectData,
     isReloadData,
-    allUsersData,
     userRole,
     userTeam,
   } = useAppSelector((state) => state.root);
@@ -92,7 +83,7 @@ export const Home = () => {
 
   const fetchData = async () => {
     const userData = localStorage.getItem("user");
-    if (!userData || !userTeam || !userRole) return;
+    if (!userData || !userTeam?.id || !userRole) return;
 
     dispatch(showLoading());
 
@@ -110,7 +101,7 @@ export const Home = () => {
       console.error("❌ Failed to fetch projects or users:", err);
     } finally {
       dispatch(hideLoading());
-      dispatch(setReloadData(false));
+      dispatch(setReloadData(false)); // ✅ TS2554: fixed by passing 'false'
     }
   };
 

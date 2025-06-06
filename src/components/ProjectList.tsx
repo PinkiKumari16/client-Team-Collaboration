@@ -3,6 +3,20 @@ import axios from "axios";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
 import { setAlertContent, setReloadData } from "../redux/rootSlice";
 
+type Project = {
+  _id: string;
+  name: string;
+  description: string;
+  teamId: { name?: string } | string;
+};
+
+
+type ProjectFormData = {
+  name: string;
+  description: string;
+  teamId: string;
+};
+
 const ProjectList: React.FC = () => {
   const dispatch = useAppDispatch();
   const { projectData, userRole, userTeam } = useAppSelector(
@@ -12,14 +26,15 @@ const ProjectList: React.FC = () => {
   const canEditOrAdd = userRole === "ADMIN" || userRole === "MANAGER";
   const canDelete = userRole === "ADMIN";
 
-  const [showForm, setShowForm] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [editProjectId, setEditProjectId] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ProjectFormData>({
     name: "",
     description: "",
     teamId: userTeam.id,
   });
+
   const openForm = () => {
     setFormData({ name: "", description: "", teamId: userTeam.id });
     setShowForm(true);
@@ -27,7 +42,7 @@ const ProjectList: React.FC = () => {
     setEditProjectId(null);
   };
 
-  const openEditForm = (project: any) => {
+  const openEditForm = (project: Project) => {
     setFormData({
       name: project.name,
       description: project.description,

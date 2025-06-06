@@ -4,8 +4,10 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import axios from "axios";
 import { hideLoading, showLoading } from "../redux/rootSlice";
 
+// Initialize socket connection
 const socket: Socket = io("https://server-team-collaboration.onrender.com");
 
+// Message interface
 interface Message {
   sender: string;
   content: string;
@@ -13,6 +15,13 @@ interface Message {
   senderId?: string;
 }
 
+// Define User type
+interface User {
+  id: string;
+  name: string;
+}
+
+// Chat component
 const ChatTest: React.FC = () => {
   const dispatch = useAppDispatch();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -21,10 +30,12 @@ const ChatTest: React.FC = () => {
   const teamId = userTeam?.id;
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  // ✅ Properly parse and type user from localStorage
+  const user: User = JSON.parse(localStorage.getItem("user") || '{"id": "", "name": "Anonymous"}');
   const currentUserName = user.name || "Anonymous";
   const senderId = user.id;
 
+  // Fetch messages on mount or when teamId changes
   useEffect(() => {
     const fetchMessages = async () => {
       if (!teamId) return;
@@ -43,7 +54,7 @@ const ChatTest: React.FC = () => {
         setMessages(formattedMessages);
       } catch (error) {
         console.error("Failed to fetch messages:", error);
-      }finally{
+      } finally {
         dispatch(hideLoading());
       }
     };
@@ -51,6 +62,7 @@ const ChatTest: React.FC = () => {
     fetchMessages();
   }, [teamId]);
 
+  // Listen for incoming messages
   useEffect(() => {
     if (!teamId) return;
 
@@ -65,12 +77,12 @@ const ChatTest: React.FC = () => {
     };
   }, [teamId]);
 
-  // 3. Scroll to bottom on new message
+  // Scroll to bottom on new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 4. Send message
+  // Send message
   const sendMessage = async () => {
     if (!input.trim() || !senderId || !teamId) return;
 
@@ -83,14 +95,14 @@ const ChatTest: React.FC = () => {
 
     try {
       socket.emit("sendMessage", { teamId, ...newMessage });
-
+      setInput("");
       await axios.post("/api/messages/add", {
         content: newMessage.content,
         senderId,
         teamId,
       });
 
-      setInput("");
+     
     } catch (error) {
       console.error("Failed to send message:", error);
       alert("Message failed to send.");
@@ -109,9 +121,7 @@ const ChatTest: React.FC = () => {
           return (
             <div
               key={i}
-              className={`flex mb-2 ${
-                isCurrentUser ? "justify-end" : "justify-start"
-              }`}
+              className={`flex mb-2 ${isCurrentUser ? "justify-end" : "justify-start"}`}
             >
               <div
                 className={`max-w-[70%] min-w-30 px-2 py-1 rounded-lg shadow ${

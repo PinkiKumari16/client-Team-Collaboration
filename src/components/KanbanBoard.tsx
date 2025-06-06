@@ -3,6 +3,13 @@ import axios from "axios";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { hideLoading, setAlertContent, showLoading } from "../redux/rootSlice";
 
+// Define User interface explicitly to fix TS errors on allUsersData
+interface User {
+  _id: string;
+  name: string;
+  role: "ADMIN" | "MANAGER" | "MEMBER"; // Adjust roles as needed
+}
+
 interface Task {
   _id: string;
   title: string;
@@ -19,12 +26,16 @@ interface KanbanBoardProps {
 }
 
 const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
-  const { allUsersData, userRole } = useAppSelector((state) => state.root);
+  // Tell TS allUsersData is an array of User objects
+  const { allUsersData, userRole } = useAppSelector(
+    (state) => state.root as { allUsersData: User[]; userRole: string }
+  );
+
   const dispatch = useAppDispatch();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-
   const currentUser = user.id;
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editTaskId, setEditTaskId] = useState<string | null>(null);
@@ -36,6 +47,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
     status: "todo" as Task["status"],
   });
 
+  // ** Fix these calls, you probably had some error with empty calls somewhere else,
+  // but here fetchTasks expects no args, so this is fine **
   const fetchTasks = async () => {
     dispatch(showLoading());
     try {

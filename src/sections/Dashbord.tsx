@@ -7,7 +7,21 @@ interface User {
   name: string;
   email: string;
   role: string;
-  team?: string;
+  team?: {
+    name?: string;
+  } | string;
+}
+
+interface SummaryCard {
+  title: string;
+  value: number;
+  color: string;
+}
+
+interface ActivityLog {
+  user: string;
+  action: string;
+  timestamp: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -21,12 +35,12 @@ const Dashboard: React.FC = () => {
         name: "Guest",
         email: "guest@example.com",
         role: "Member",
-        team: "Default",
+        team: { name: "Default" },
       };
 
   const [allUsers, setAllUsers] = useState<User[]>([]);
 
-  const isAdminOrManager = ["ADMIN", "MANAGER"].includes(userDetails.role);
+  const isAdminOrManager: boolean = ["ADMIN", "MANAGER"].includes(userDetails.role);
 
   useEffect(() => {
     const fetchAllUsers = async () => {
@@ -41,10 +55,10 @@ const Dashboard: React.FC = () => {
     fetchAllUsers();
   }, []);
 
-  const totalProjects = Array.isArray(projectData) ? projectData.length : 0;
-  const totalUsers = Array.isArray(allUsers) ? allUsers.length : 0;
+  const totalProjects: number = Array.isArray(projectData) ? projectData.length : 0;
+  const totalUsers: number = Array.isArray(allUsers) ? allUsers.length : 0;
 
-  const summaryCards = [
+  const summaryCards: SummaryCard[] = [
     {
       title: "Total Team Projects",
       value: totalProjects,
@@ -57,7 +71,7 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const activityLogs = [
+  const activityLogs: ActivityLog[] = [
     {
       user: "John Doe",
       action: "updated task 'Fix Navbar Bug'",
@@ -80,14 +94,14 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const getGreeting = () => {
+  const getGreeting = (): string => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return `🌅 Good Morning`;
     if (hour >= 12 && hour < 17) return `🌞 Good Afternoon`;
     return `Good Evening`;
   };
 
-  const getRoleBadgeColor = (role: string) => {
+  const getRoleBadgeColor = (role: string): string => {
     switch (role) {
       case "ADMIN":
         return "bg-red-400";
@@ -98,12 +112,17 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const teamName =
+    typeof userDetails.team === "object" && userDetails.team?.name
+      ? userDetails.team.name
+      : "Unknown";
+
   return (
     <>
       {/* Navbar */}
       <div className="bg-[#0a0233] shadow px-6 py-4 flex items-center justify-between rounded-b-xl">
         <h1 className="text-lg font-semibold text-white">
-          🚀 {userDetails.team.name || "Unknown"} Team's Dashboard
+          🚀 {teamName} Team's Dashboard
         </h1>
       </div>
 

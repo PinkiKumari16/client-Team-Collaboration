@@ -2,13 +2,28 @@ import React from "react";
 import { useAppSelector } from "../redux/hooks";
 import KanbanBoard from "./KanbanBoard";
 
+interface Team {
+  _id: string;
+  name: string;
+}
+
+interface Project {
+  _id: string;
+  name: string;
+  description?: string;
+  teamId?: Team; // optional if not always populated
+}
+
 interface SingleProjectViewProps {
   projectId: string;
 }
 
 const SingleProjectView: React.FC<SingleProjectViewProps> = ({ projectId }) => {
-  const { projectData } = useAppSelector((state) => state.root); // adjust according to your store
-  const project = projectData.find((p: any) => p._id === projectId);
+  const { projectData } = useAppSelector(
+    (state) => state.root as { projectData: Project[] }
+  );
+
+  const project = projectData.find((p) => p._id === projectId);
 
   if (!project) {
     return <p className="text-center mt-10">Project not found.</p>;
@@ -20,10 +35,10 @@ const SingleProjectView: React.FC<SingleProjectViewProps> = ({ projectId }) => {
         <h2 className="text-3xl font-extrabold mb-6 text-white dark:text-gray-100 tracking-wide">
           {project.name}
         </h2>
-        <div className="flex text-gray-100 flex-col md:flex-row justify-between  md:items-start gap-3 px-3 mx-auto text-left">
+        <div className="flex text-gray-100 flex-col md:flex-row justify-between md:items-start gap-3 px-3 mx-auto text-left">
           <p>
             Team:{" "}
-            <span className="text-sm font-semibold uppercase tracking-wider text-[#abe8fb] bg- mb-1 p-1 rounded-2xl ">
+            <span className="text-sm font-semibold uppercase tracking-wider text-[#abe8fb] mb-1 p-1 rounded-2xl">
               {project.teamId?.name || "N/A"}
             </span>
           </p>
