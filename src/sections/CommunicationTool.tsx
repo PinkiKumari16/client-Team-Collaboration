@@ -2,8 +2,17 @@ import React from "react";
 import TestSocketConnection from "../components/SocketConnection";
 import { useAppSelector } from "../redux/hooks";
 
+interface RootState {
+  root: {
+    userTeam: {
+      name?: string;
+      [key: string]: any;
+    };
+  };
+}
+
 const CommunicationTools: React.FC = () => {
-  const { userTeam } = useAppSelector((state) => state.root);
+  const userTeam = useAppSelector((state: RootState) => state.root.userTeam);
 
   const teamName = userTeam?.name || "Guest";
 

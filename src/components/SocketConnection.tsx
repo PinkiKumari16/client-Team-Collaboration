@@ -21,12 +21,20 @@ interface User {
   name: string;
 }
 
-// Chat component
+// Define Team type
+interface Team {
+  id?: string;
+  name?: string;
+  [key: string]: any;
+}
+
 const ChatTest: React.FC = () => {
   const dispatch = useAppDispatch();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const { userTeam } = useAppSelector((state) => state.root);
+
+  // ✅ Type userTeam properly to resolve TypeScript error
+  const userTeam: Team = useAppSelector((state) => state.root.userTeam || {});
   const teamId = userTeam?.id;
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -101,8 +109,6 @@ const ChatTest: React.FC = () => {
         senderId,
         teamId,
       });
-
-     
     } catch (error) {
       console.error("Failed to send message:", error);
       alert("Message failed to send.");

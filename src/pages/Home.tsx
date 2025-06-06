@@ -15,6 +15,12 @@ import {
   showLoading,
 } from "../redux/rootSlice";
 
+// ✅ Define types
+interface Team {
+  id: string;
+  name: string;
+}
+
 const SidebarItem = ({
   label,
   active,
@@ -43,6 +49,11 @@ export const Home = () => {
     isReloadData,
     userRole,
     userTeam,
+  }: {
+    projectData: any[];
+    isReloadData: boolean;
+    userRole: string;
+    userTeam: Team | null;
   } = useAppSelector((state) => state.root);
 
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -101,7 +112,7 @@ export const Home = () => {
       console.error("❌ Failed to fetch projects or users:", err);
     } finally {
       dispatch(hideLoading());
-      dispatch(setReloadData(false)); // ✅ TS2554: fixed by passing 'false'
+      dispatch(setReloadData(false)); // ✅ fixed TS2554
     }
   };
 

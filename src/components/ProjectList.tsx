@@ -10,7 +10,6 @@ type Project = {
   teamId: { name?: string } | string;
 };
 
-
 type ProjectFormData = {
   name: string;
   description: string;
@@ -19,8 +18,14 @@ type ProjectFormData = {
 
 const ProjectList: React.FC = () => {
   const dispatch = useAppDispatch();
+  
+  // Explicitly type projectData as Project[]
   const { projectData, userRole, userTeam } = useAppSelector(
-    (state) => state.root
+    (state) => ({
+      projectData: state.root.projectData as Project[],
+      userRole: state.root.userRole,
+      userTeam: state.root.userTeam,
+    })
   );
 
   const canEditOrAdd = userRole === "ADMIN" || userRole === "MANAGER";
@@ -61,8 +66,8 @@ const ProjectList: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    let response;
     try {
+      let response;
       if (isEditMode && editProjectId) {
         response = await axios.put("/api/projects/editProject", {
           id: editProjectId,
@@ -118,10 +123,9 @@ const ProjectList: React.FC = () => {
           </button>
         )}
       </div>
+
       {projectData.length === 0 ? (
-        <p className="text-gray-600 dark:text-gray-400">
-          No projects available.
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">No projects available.</p>
       ) : (
         <table className="w-full text-[10px] lg:text-sm text-left border-collapse border border-[#0a0233] dark:border-gray-700">
           <thead className="bg-[#0a0233] dark:bg-gray-700 text-gray-100 dark:text-gray-300">
@@ -129,9 +133,7 @@ const ProjectList: React.FC = () => {
               <th className="p-2 border">Name</th>
               <th className="p-2 border">Description</th>
               <th className="p-2 border">Team Name</th>
-              {(canEditOrAdd || canDelete) && (
-                <th className="p-2 border">Actions</th>
-              )}
+              {(canEditOrAdd || canDelete) && <th className="p-2 border">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -172,6 +174,7 @@ const ProjectList: React.FC = () => {
           </tbody>
         </table>
       )}
+
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl shadow-lg relative">
