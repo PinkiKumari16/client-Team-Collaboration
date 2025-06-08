@@ -49,7 +49,7 @@ const ChatTest: React.FC = () => {
       if (!teamId) return;
       dispatch(showLoading());
       try {
-        const res = await axios.get("/api/messages/get", {
+        const res = await axios.get("https://server-team-collaboration.onrender.com/api/messages/get", {
           params: { teamId },
         });
 
@@ -104,7 +104,7 @@ const ChatTest: React.FC = () => {
     try {
       socket.emit("sendMessage", { teamId, ...newMessage });
       setInput("");
-      await axios.post("/api/messages/add", {
+      await axios.post("https://server-team-collaboration.onrender.com/api/messages/add", {
         content: newMessage.content,
         senderId,
         teamId,
