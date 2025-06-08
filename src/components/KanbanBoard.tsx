@@ -52,7 +52,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
   const fetchTasks = async () => {
     dispatch(showLoading());
     try {
-      const res = await axios.get(`/api/task/getTasks?projectId=${projectId}`);
+      const res = await axios.get(`https://server-team-collaboration.onrender.com/api/task/getTasks?projectId=${projectId}`);
       setTasks(res.data.tasks || []);
     } catch (error: any) {
       dispatch(setAlertContent({ type: "error", message: error.message }));
@@ -106,8 +106,8 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
 
     try {
       const response = editTaskId
-        ? await axios.put(`/api/task/editTask/${editTaskId}`, payload)
-        : await axios.post("/api/task/insert", payload);
+        ? await axios.put(`https://server-team-collaboration.onrender.com/api/task/editTask/${editTaskId}`, payload)
+        : await axios.post("https://server-team-collaboration.onrender.com/api/task/insert", payload);
 
       if (response.status === 200 || response.status === 201) {
         resetForm();
@@ -129,7 +129,7 @@ const KanbanBoard: React.FC<KanbanBoardProps> = ({ projectId }) => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await axios.delete(`/api/task/deleteTask/${id}`);
+      const res = await axios.delete(`https://server-team-collaboration.onrender.com/api/task/deleteTask/${id}`);
       if (res.status === 200) {
         await fetchTasks();
         dispatch(
