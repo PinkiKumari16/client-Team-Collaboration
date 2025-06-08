@@ -72,12 +72,12 @@ const ProjectList: React.FC = () => {
     try {
       let response;
       if (isEditMode && editProjectId) {
-        response = await axios.put("/api/projects/editProject", {
+        response = await axios.put("https://server-team-collaboration.onrender.com/api/projects/editProject", {
           id: editProjectId,
           ...formData,
         });
       } else {
-        response = await axios.post("/api/projects/insert", formData);
+        response = await axios.post("https://server-team-collaboration.onrender.com/api/projects/insert", formData);
       }
 
       if (response.status === 200 || response.status === 201) {
@@ -97,7 +97,7 @@ const ProjectList: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await axios.delete(`/api/projects/deleteProject/${id}`);
+      const res = await axios.delete(`https://server-team-collaboration.onrender.com/api/projects/deleteProject/${id}`);
       if (res.status === 200) {
         dispatch(setReloadData(true));
         dispatch(
