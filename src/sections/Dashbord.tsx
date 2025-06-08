@@ -45,7 +45,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     const fetchAllUsers = async () => {
       try {
-        const res = await axios.get("/api/users/getUsers");
+        const res = await axios.get("https://server-team-collaboration.onrender.com/api/users/getUsers");
         setAllUsers(res.data.users);
       } catch (error) {
         console.error("Error fetching users", error);
