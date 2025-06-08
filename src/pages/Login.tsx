@@ -27,7 +27,7 @@ export const Login: React.FC = () => {
       );
       const firebaseUser = userCredential.user;
 
-      const response = await axios.post("/api/users/login", {
+      const response = await axios.post("https://server-team-collaboration.onrender.com/api/users/login", {
         firebaseUid: firebaseUser.uid,
         email: firebaseUser.email,
       });
