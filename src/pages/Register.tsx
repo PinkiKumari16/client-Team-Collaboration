@@ -39,7 +39,7 @@ export const Register: React.FC = () => {
       await updateProfile(firebaseUser, { displayName: name });
 
       // 2. Send user data including Firebase UID to backend
-      const response = await axios.post("/api/users/register", {
+      const response = await axios.post("https://server-team-collaboration.onrender.com/api/users/register", {
         firebaseUid: firebaseUser.uid,
         name,
         email,
