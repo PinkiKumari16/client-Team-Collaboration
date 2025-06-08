@@ -101,10 +101,10 @@ export const Home = () => {
 
     try {
       const [projectRes, userRes] = await Promise.all([
-        axios.get("/api/projects/getProjects", {
+        axios.get("https://server-team-collaboration.onrender.com/api/projects/getProjects", {
           params: { teamId: userTeam.id },
         }),
-        axios.get("/api/users/getUsers"),
+        axios.get("https://server-team-collaboration.onrender.com/api/users/getUsers"),
       ]);
 
       dispatch(setProjectData(projectRes.data.projects || []));
