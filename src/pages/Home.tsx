@@ -81,7 +81,7 @@ export const Home = () => {
       const auth = getAuth();
       await signOut(auth);
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      window.location.href = "/";
     } catch (error) {
       console.error("❌ Logout error:", error);
       dispatch(
