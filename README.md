@@ -26,7 +26,7 @@ A full-stack, real-time team collaboration platform where teams can manage proje
 
 ## 🚀 Live Demo
 - **GitHub**: [Server Code](https://github.com/PinkiKumari16/server-Team-Collaboration), [Client Code](https://github.com/PinkiKumari16/client-Team-Collaboration)
-- **Frontend**: [Live Frontend URL](https://client-team-collaboration-evf9.vercel.app/)
+- **Frontend**: [Live Frontend URL](https://client-team-collaboration.vercel.app/)
 - **Backend**: [Live API URL](https://server-team-collaboration.onrender.com/)
 
 ---
