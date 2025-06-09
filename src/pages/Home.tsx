@@ -15,13 +15,13 @@ import {
   showLoading,
 } from "../redux/rootSlice";
 
-// ✅ Type for Team
+// Type for Team
 interface Team {
   id: string;
   name: string;
 }
 
-// ✅ Sidebar UI component
+// Sidebar UI component
 const SidebarItem = ({
   label,
   active,
@@ -54,7 +54,7 @@ export const Home = () => {
     projectData: any[];
     isReloadData: boolean;
     userRole: string;
-    userTeam: Team | null; // ✅ FIXED typing
+    userTeam: Team | null; // FIXED typing
   } = useAppSelector((state) => state.root);
 
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -83,7 +83,7 @@ export const Home = () => {
       localStorage.removeItem("user");
       window.location.href = "/";
     } catch (error) {
-      console.error("❌ Logout error:", error);
+      console.error("Logout error:", error);
       dispatch(
         setAlertContent({
           type: "error",
@@ -110,7 +110,7 @@ export const Home = () => {
       dispatch(setProjectData(projectRes.data.projects || []));
       dispatch(setAllUsersData(userRes.data.users || []));
     } catch (err) {
-      console.error("❌ Failed to fetch projects or users:", err);
+      console.error("Failed to fetch projects or users:", err);
     } finally {
       dispatch(hideLoading());
       dispatch(setReloadData(false));
